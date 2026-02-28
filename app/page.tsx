@@ -1,4 +1,4 @@
-import { EngineerVaultApp } from '@/components/EngineerVaultApp';
+import EngineerVaultApp from '@/components/EngineerVaultApp';
 
 export default function Home() {
   return <EngineerVaultApp />;
