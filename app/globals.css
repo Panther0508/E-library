@@ -3,13 +3,162 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-slateDark text-zinc-100 antialiased;
+  @apply antialiased;
 }
 
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+}
+
+.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: #1f2937;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-600;
+}
+
+/* Glow effect for gold theme */
 .glow {
   box-shadow: 0 0 0 1px rgba(184, 134, 11, 0.4), 0 0 24px rgba(184, 134, 11, 0.35);
+}
+
+/* Text gradient for gold */
+.text-gold {
+  color: #B8860B;
+}
+
+/* Background gold */
+.bg-gold {
+  background-color: #B8860B;
+}
+
+/* Border gold */
+.border-gold {
+  border-color: #B8860B;
+}
+
+/* Gold text on hover */
+.hover\:text-gold:hover {
+  color: #B8860B;
+}
+
+/* Gold background on hover */
+.hover\:bg-gold:hover {
+  background-color: #B8860B;
+}
+
+/* Gold border on hover */
+.hover\:border-gold:hover {
+  border-color: #B8860B;
+}
+
+/* Gold text with opacity */
+.text-gold-10 {
+  color: rgba(184, 134, 11, 0.1);
+}
+
+.text-gold-20 {
+  color: rgba(184, 134, 11, 0.2);
+}
+
+/* Gold background with opacity */
+.bg-gold-10 {
+  background-color: rgba(184, 134, 11, 0.1);
+}
+
+.bg-gold-20 {
+  background-color: rgba(184, 134, 11, 0.2);
+}
+
+/* Gold border with opacity */
+.border-gold-30 {
+  border-color: rgba(184, 134, 11, 0.3);
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Animation utilities */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(-5%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Focus ring */
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:border-gold:focus {
+  border-color: #B8860B;
 }
