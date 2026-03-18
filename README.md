@@ -1,170 +1,272 @@
-# EngineerVault - Engineering E-Library Platform
+# EngineerVault
 
-<p align="center">
-  <img src="https://img.shields.io/badge/EngineerVault-v2.0.0-gold" alt="Version">
-  <img src="https://img.shields.io/badge/Next.js-16-blue" alt="Next.js">
-  <img src="https://img.shields.io/badge/React-18-blue" alt="React">
-  <img src="https://img.shields.io/badge/TypeScript-5.9-blue" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Tailwind-3.4-cyan" alt="Tailwind">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-</p>
+A modern web application for browsing and searching remote job listings, featuring AI-powered capabilities through HuggingFace integration.
 
-## 🚀 About EngineerVault
+## Features
 
-EngineerVault is a modern, AI-powered engineering eLibrary platform designed to help engineering students, researchers, and professionals discover, access, and manage engineering resources. Built with cutting-edge web technologies, it offers an immersive reading experience with gamification elements to encourage continuous learning.
+- **Job Listings**: Browse remote jobs from the Remotive API
+- **Advanced Search**: Filter by keyword, location, job type, and category
+- **Trending Jobs**: Discover recently posted opportunities
+- **AI Capabilities**: Text generation, summarization, sentiment analysis, and more via HuggingFace
+- **Serverless Architecture**: Optimized for Vercel deployment
+- **Production-Ready**: Caching, rate limiting, error handling, and comprehensive logging
 
-## ✨ Key Features
+## Tech Stack
 
-### 📚 Library Management
-- **Universal Book Search** - Search millions of engineering books from Open Library
-- **Book Details with Tabs** - Overview, Description, and Details views
-- **Personal Library Collection** - Curated collection of engineering books
-- **Favorites System** - Save and organize your favorite books
+- **Frontend**: Next.js 16, React 18, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes (Serverless)
+- **Database**: Supabase (optional, for future features)
+- **AI/ML**: HuggingFace Inference API
+- **Job Data**: Remotive API
 
-### 🎮 Gamification System
-- **Points & Rewards** - Earn points for reading, searching, and saving books
-- **User Levels** - Progress through levels as you accumulate points
-- **Achievements** - Unlock achievements for milestones
-- **Badges** - Earn badges for various accomplishments
-- **Day Streaks** - Maintain login streaks for bonus rewards
-- **Leaderboard-ready** - Points system ready for community competition
-
-### 📊 User Dashboard
-- **Personal Stats** - Track books read, points earned, favorites saved
-- **Level Progress** - Visual progress bar to next level
-- **Library Card** - Unique library number for each user
-- **Badge Collection** - View all earned and locked badges
-- **Achievement Tracking** - Monitor progress toward achievements
-
-### 🛒 Book Store
-- **Point Redemption** - Redeem points for premium content
-- **Course Bundles** - Access engineering courses
-- **E-Books & Subscriptions** - Purchase premium resources
-
-### 🎨 Modern UI/UX
-- **Dark & Light Themes** - Toggle between themes
-- **Responsive Design** - Works on all devices
-- **Grid & List Views** - Choose your preferred display
-- **Category Filtering** - Filter by engineering disciplines
-
-### 🔐 Authentication
-- **Email Authentication** - Secure login via Supabase
-- **User Sessions** - Persistent user state
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| **Next.js 16** | React framework with App Router |
-| **React 18** | UI library with hooks |
-| **TypeScript** | Type safety |
-| **Tailwind CSS** | Styling |
-| **Supabase** | Authentication & backend |
-| **Open Library API** | Book data source |
-| **Lucide React** | Icons |
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-E-library/
-├── app/                    # Next.js App Router
+engineervault/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   │   ├── docs/          # API documentation
+│   │   ├── health/        # Health check endpoint
+│   │   ├── huggingface/   # HuggingFace AI endpoints
+│   │   └── jobs/          # Job listing endpoints
+│   │       ├── [id]/      # Single job details
+│   │       ├── categories/ # Job categories
+│   │       ├── search/   # Job search
+│   │       └── trending/  # Trending jobs
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # Home page
-├── components/            # React components
-│   └── EngineerVaultApp.tsx  # Main application
-├── lib/                   # Utility libraries
-│   ├── api.ts            # API utilities
+├── lib/                   # Core libraries
+│   ├── api/              # API utilities
+│   │   ├── cache.ts      # In-memory caching
+│   │   ├── cors.ts       # CORS configuration
+│   │   ├── docs.ts       # API documentation
+│   │   ├── errorHandler.ts # Error handling
+│   │   ├── huggingfaceService.ts # HuggingFace integration
+│   │   ├── rateLimiter.ts # Rate limiting
+│   │   ├── remotiveService.ts # Remotive API service
+│   │   └── types.ts      # TypeScript types
+│   ├── api.ts            # API client
 │   ├── data.ts           # Static data
 │   └── supabaseClient.ts # Supabase client
-├── types/                 # TypeScript types
-├── tailwind.config.ts     # Tailwind configuration
-├── tsconfig.json          # TypeScript config
-└── package.json           # Dependencies
+├── components/            # React components
+├── styles/               # Additional styles
+├── types/                # Additional type definitions
+├── .env.example          # Environment variables template
+├── next.config.mjs      # Next.js configuration
+├── package.json          # Dependencies
+├── tailwind.config.ts    # Tailwind configuration
+└── tsconfig.json         # TypeScript configuration
 ```
 
-## 🚦 Getting Started
+## API Endpoints
+
+### Jobs API
+
+| Endpoint               | Method | Description                   |
+| ---------------------- | ------ | ----------------------------- |
+| `/api/jobs`            | GET    | List all jobs with pagination |
+| `/api/jobs/search`     | GET    | Search jobs with filters      |
+| `/api/jobs/categories` | GET    | Get job categories            |
+| `/api/jobs/[id]`       | GET    | Get single job details        |
+| `/api/jobs/trending`   | GET    | Get trending jobs             |
+
+### AI API (HuggingFace)
+
+| Endpoint           | Method | Description          |
+| ------------------ | ------ | -------------------- |
+| `/api/huggingface` | POST   | AI text operations   |
+| `/api/huggingface` | GET    | Get available models |
+
+### System API
+
+| Endpoint      | Method | Description       |
+| ------------- | ------ | ----------------- |
+| `/api/health` | GET    | Health check      |
+| `/api/docs`   | GET    | API documentation |
+
+## API Usage Examples
+
+### Fetch Jobs
+
+```bash
+curl "http://localhost:3000/api/jobs?page=1&limit=20"
+```
+
+### Search Jobs
+
+```bash
+curl "http://localhost:3000/api/jobs/search?keyword=react&location=USA"
+```
+
+### Get Categories
+
+```bash
+curl "http://localhost:3000/api/jobs/categories"
+```
+
+### AI Text Generation
+
+```bash
+curl -X POST "http://localhost:3000/api/huggingface" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "generate",
+    "inputs": "Once upon a time in a distant land",
+    "parameters": { "max_new_tokens": 50 }
+  }'
+```
+
+### AI Summarization
+
+```bash
+curl -X POST "http://localhost:3000/api/huggingface" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "summarize",
+    "inputs": "Your long text here..."
+  }'
+```
+
+### Sentiment Analysis
+
+```bash
+curl -X POST "http://localhost:3000/api/huggingface" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "sentiment",
+    "inputs": "I love this job opportunity!"
+  }'
+```
+
+### Zero-Shot Classification
+
+```bash
+curl -X POST "http://localhost:3000/api/huggingface" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "classify",
+    "inputs": "This is a great opportunity for software engineers",
+    "parameters": {
+      "candidate_labels": ["technology", "healthcare", "finance", "education"]
+    }
+  }'
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Remotive API (optional - uses default)
+REMOTIVE_API_URL=https://remotive.com/api/remote-jobs
+
+# HuggingFace (required for AI features)
+HUGGINGFACE_API_TOKEN=your-huggingface-token
+
+# Vercel Frontend (for CORS)
+VERCEL_FRONTEND_URL=https://your-project.vercel.app
+```
+
+## Getting a HuggingFace Token
+
+1. Go to [HuggingFace Settings](https://huggingface.co/settings/tokens)
+2. Create a new token with "Read" permissions
+3. Add it to your environment variables
+
+## Development
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
-- Supabase account (for authentication)
 
-### Installation
+### Install Dependencies
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd E-library
-   ```
+```bash
+npm install
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### Run Development Server
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
+```bash
+npm run dev
+```
 
-4. **Configure your `.env.local`**
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-   ```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+### Run Production Build
 
-6. **Open [http://localhost:3000](http://localhost:3000)**
+```bash
+npm run build
+npm start
+```
 
-## 📖 Available Scripts
+## Rate Limiting
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
+The API implements rate limiting to prevent abuse:
 
-## 🎯 Engineering Categories
+| Endpoint Type    | Limit       | Window   |
+| ---------------- | ----------- | -------- |
+| General          | 30 requests | 1 minute |
+| Search           | 10 requests | 1 minute |
+| Detail           | 60 requests | 1 minute |
+| AI (HuggingFace) | 10 requests | 1 minute |
 
-- Mechanical Engineering
-- Electrical & Electronics
-- Mechatronics
-- Robotics & Automation
-- Embedded Systems
-- Programming (C, C++, Python, MATLAB)
-- CAD & Simulation
-- Computer Science
-- Civil Engineering
-- Chemical Engineering
-- Aerospace Engineering
+Rate limit headers are included in responses:
 
-## 🤝 Contributing
+- `X-RateLimit-Limit`: Maximum requests allowed
+- `X-RateLimit-Remaining`: Requests remaining
+- `X-RateLimit-Reset`: When the limit resets
 
-We welcome open source contributions! This project is designed for community involvement.
+## Caching
 
-### How to Contribute
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+The API uses in-memory caching to improve performance:
 
-## 📄 License
+| Endpoint       | TTL        |
+| -------------- | ---------- |
+| Jobs List      | 3 minutes  |
+| Job Details    | 10 minutes |
+| Categories     | 15 minutes |
+| Search Results | 2 minutes  |
+| Trending Jobs  | 3 minutes  |
 
-This project is licensed under the MIT License.
+## Error Handling
 
-## 👤 Contact
+All errors return a consistent JSON format:
 
-For questions or contributions, please reach out:
+```json
+{
+  "success": false,
+  "error": {
+    "statusCode": 400,
+    "message": "Error message",
+    "code": "ERROR_CODE",
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "requestId": "req_xxx"
+  }
+}
+```
 
-**Email:** nmesirionyengbaronye@gmail.com
+## Available AI Actions
 
----
+| Action       | Description              | Parameters                          |
+| ------------ | ------------------------ | ----------------------------------- |
+| `generate`   | Text generation          | inputs, model, parameters           |
+| `summarize`  | Text summarization       | inputs, model, parameters           |
+| `translate`  | Translation              | inputs, model, parameters           |
+| `sentiment`  | Sentiment analysis       | inputs, model                       |
+| `embeddings` | Text embeddings          | inputs, model                       |
+| `classify`   | Zero-shot classification | inputs, parameters.candidate_labels |
 
-<p align="center">Built with ❤️ for engineering students worldwide</p>
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+
+## License
+
+MIT License
