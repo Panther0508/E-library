@@ -509,69 +509,57 @@ export default function EngineerVaultApp() {
     setAuthLoading(true);
     setAuthError('');
     
-    // Try Supabase auth first
+    // Use backup auth directly (bypass Supabase)
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: emailInput,
-        options: { emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined }
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'login',
+          email: emailInput,
+          password: passwordInput || 'dummy_password'
+        })
       });
-      if (error) throw error;
-      alert('Check your email for the login link!');
-      setShowAuthModal(false);
-      setEmailInput('');
-    } catch (error: any) {
-      // Fallback to backup auth if Supabase fails
-      console.log('Supabase login failed, trying backup auth...');
-      try {
-        const response = await fetch('/api/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'login',
-            email: emailInput,
-            password: passwordInput || 'dummy_password_for_otp'
-          })
-        });
-        const data = await response.json();
-        
-        if (data.success && data.data?.success) {
-          // Store token
-          if (data.data.token) {
-            localStorage.setItem('auth_token', data.data.token);
-          }
-          const libraryNumber = generateLibraryNumber();
-          setUser({
-            id: data.data.user.id,
-            email: data.data.user.email,
-            libraryNumber,
-            points: 0,
-            level: 1,
-            badges: [],
-            booksRead: 0,
-            uploadsCount: 0
-          });
-          const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
-          const newProfile: UserProfile = {
-            displayName: data.data.user.name,
-            avatarColor: randomColor,
-            bio: 'Engineering enthusiast',
-            joinedDate: new Date().toISOString(),
-            favoriteGenre: 'Mechanical Engineering',
-            readingGoal: 12,
-            currentlyReading: [],
-            completedBooks: []
-          };
-          setUserProfile(newProfile);
-          checkAndAwardBadge('newbie');
-          setShowAuthModal(false);
-          setEmailInput('');
-          setPasswordInput('');
-        } else {
-          setAuthError(data.data?.message || 'Login failed');
+      const data = await response.json();
+      
+      if (data.success && data.data?.success) {
+        // Store token
+        if (data.data.token) {
+          localStorage.setItem('auth_token', data.data.token);
         }
-      } catch (backupError) {
-        setAuthError(error.message || 'Login failed');
+        const libraryNumber = generateLibraryNumber();
+        setUser({
+          id: data.data.user.id,
+          email: data.data.user.email,
+          libraryNumber,
+          points: 0,
+          level: 1,
+          badges: [],
+          booksRead: 0,
+          uploadsCount: 0
+        });
+        const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+        const newProfile: UserProfile = {
+          displayName: data.data.user.name,
+          avatarColor: randomColor,
+          bio: 'Engineering enthusiast',
+          joinedDate: new Date().toISOString(),
+          favoriteGenre: 'Mechanical Engineering',
+          readingGoal: 12,
+          currentlyReading: [],
+          completedBooks: []
+        };
+        setUserProfile(newProfile);
+        checkAndAwardBadge('newbie');
+        setShowAuthModal(false);
+        setEmailInput('');
+        setPasswordInput('');
+      } else {
+        setAuthError(data.data?.message || 'Login failed');
       }
+    } catch (err) {
+      console.error('Login error:', err);
+      setAuthError('Login failed. Please try again.');
     } finally {
       setAuthLoading(false);
     }
@@ -582,87 +570,59 @@ export default function EngineerVaultApp() {
     setAuthLoading(true);
     setAuthError('');
     
-    // Try Supabase auth first
+    // Use backup auth directly (bypass Supabase)
     try {
-      const { error } = await supabase.auth.signUp({
-        email: emailInput,
-        password: passwordInput,
-        options: { emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined }
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'register',
+          email: emailInput,
+          password: passwordInput,
+          name: emailInput.split('@')[0]
+        })
       });
-      if (error) throw error;
+      const data = await response.json();
       
-      // Create user profile on signup
-      const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
-      const newProfile: UserProfile = {
-        displayName: emailInput.split('@')[0],
-        avatarColor: randomColor,
-        bio: 'New engineering student',
-        joinedDate: new Date().toISOString(),
-        favoriteGenre: 'Mechanical Engineering',
-        readingGoal: 12,
-        currentlyReading: [],
-        completedBooks: []
-      };
-      setUserProfile(newProfile);
-      
-      alert('Account created! Please check your email to verify.');
-      setShowAuthModal(false);
-      setEmailInput('');
-      setPasswordInput('');
-    } catch (error: any) {
-      // Fallback to backup auth if Supabase fails
-      console.log('Supabase signup failed, trying backup auth...');
-      try {
-        const response = await fetch('/api/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'register',
-            email: emailInput,
-            password: passwordInput,
-            name: emailInput.split('@')[0]
-          })
-        });
-        const data = await response.json();
-        
-        if (data.success && data.data?.success) {
-          // Store token
-          if (data.data.token) {
-            localStorage.setItem('auth_token', data.data.token);
-          }
-          const libraryNumber = generateLibraryNumber();
-          setUser({
-            id: data.data.user.id,
-            email: data.data.user.email,
-            libraryNumber,
-            points: 0,
-            level: 1,
-            badges: [],
-            booksRead: 0,
-            uploadsCount: 0
-          });
-          const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
-          const newProfile: UserProfile = {
-            displayName: data.data.user.name,
-            avatarColor: randomColor,
-            bio: 'New engineering student',
-            joinedDate: new Date().toISOString(),
-            favoriteGenre: 'Mechanical Engineering',
-            readingGoal: 12,
-            currentlyReading: [],
-            completedBooks: []
-          };
-          setUserProfile(newProfile);
-          checkAndAwardBadge('newbie');
-          setShowAuthModal(false);
-          setEmailInput('');
-          setPasswordInput('');
-        } else {
-          setAuthError(data.data?.message || 'Signup failed');
+      if (data.success && data.data?.success) {
+        // Store token
+        if (data.data.token) {
+          localStorage.setItem('auth_token', data.data.token);
         }
-      } catch (backupError) {
-        setAuthError(error.message || 'Signup failed. Please try again.');
+        const libraryNumber = generateLibraryNumber();
+        setUser({
+          id: data.data.user.id,
+          email: data.data.user.email,
+          libraryNumber,
+          points: 0,
+          level: 1,
+          badges: [],
+          booksRead: 0,
+          uploadsCount: 0
+        });
+        const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+        const newProfile: UserProfile = {
+          displayName: data.data.user.name,
+          avatarColor: randomColor,
+          bio: 'New engineering student',
+          joinedDate: new Date().toISOString(),
+          favoriteGenre: 'Mechanical Engineering',
+          readingGoal: 12,
+          currentlyReading: [],
+          completedBooks: []
+        };
+        setUserProfile(newProfile);
+        checkAndAwardBadge('newbie');
+        alert('Account created successfully!');
+        setShowAuthModal(false);
+        setEmailInput('');
+        setPasswordInput('');
+      } else {
+        setAuthError(data.data?.message || 'Signup failed');
       }
+    } catch (err) {
+      console.error('Signup error:', err);
+      setAuthError('Signup failed. Please try again.');
     } finally {
       setAuthLoading(false);
     }
