@@ -1,15 +1,75 @@
 # EngineerVault
 
-A modern web application for browsing and searching remote job listings, featuring AI-powered capabilities through HuggingFace integration.
+A modern web application for browsing and searching remote job listings, featuring AI-powered capabilities through HuggingFace integration, plus a personal library for engineering resources.
+
+![EngineerVault Hero](./public/images/hero.png)
 
 ## Features
 
-- **Job Listings**: Browse remote jobs from the Remotive API
-- **Advanced Search**: Filter by keyword, location, job type, and category
-- **Trending Jobs**: Discover recently posted opportunities
-- **AI Capabilities**: Text generation, summarization, sentiment analysis, and more via HuggingFace
-- **Serverless Architecture**: Optimized for Vercel deployment
-- **Production-Ready**: Caching, rate limiting, error handling, and comprehensive logging
+### Job Listings
+
+- Browse remote jobs from the Remotive API
+- Advanced search with filters (keyword, location, job type, category)
+- Trending jobs based on posting recency
+- Job categories with counts
+- Application deadline tracking
+
+### Personal Library
+
+- Save and organize your favorite engineering resources
+- Track reading progress with levels and points
+- Earn badges for achievements
+- Upload custom resources
+- Curated recommendations
+
+### AI Features
+
+- Text generation for job descriptions
+- Summarization of long content
+- Sentiment analysis
+- Zero-shot classification
+- Text embeddings
+
+### Technical Features
+
+- Serverless architecture (Vercel-ready)
+- In-memory caching with TTL
+- Rate limiting to prevent abuse
+- Comprehensive error handling
+- CORS configured for Vercel and localhost
+- Backup authentication system (works without Supabase)
+
+## Screenshots
+
+### Home Page
+
+![Home Page](./public/images/hero.png)
+_The main landing page with hero section and trending content_
+
+### Jobs Section
+
+![Jobs](./public/images/jobs.png)
+_Browse and filter remote job opportunities_
+
+### Search & AI
+
+![Search & AI](./public/images/search.png)
+_Advanced search with AI-powered features_
+
+### AI Recommendations
+
+![AI Features](./public/images/ai.png)
+_AI-powered book recommendations and analysis_
+
+### Personal Library
+
+![Personal Library](./public/images/library.png)
+_Your personal collection of engineering resources_
+
+### Mobile Responsive
+
+![Mobile View](./public/images/mobile.png)
+_Fully responsive design for all devices_
 
 ## Tech Stack
 
@@ -25,38 +85,41 @@ A modern web application for browsing and searching remote job listings, featuri
 engineervault/
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
+│   │   ├── auth/          # Authentication (backup system)
 │   │   ├── docs/          # API documentation
 │   │   ├── health/        # Health check endpoint
 │   │   ├── huggingface/   # HuggingFace AI endpoints
 │   │   └── jobs/          # Job listing endpoints
 │   │       ├── [id]/      # Single job details
 │   │       ├── categories/ # Job categories
-│   │       ├── search/   # Job search
-│   │       └── trending/  # Trending jobs
+│   │       ├── search/    # Job search
+│   │       └── trending/   # Trending jobs
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # Home page
-├── lib/                   # Core libraries
-│   ├── api/              # API utilities
-│   │   ├── cache.ts      # In-memory caching
-│   │   ├── cors.ts       # CORS configuration
-│   │   ├── docs.ts       # API documentation
-│   │   ├── errorHandler.ts # Error handling
+├── lib/                    # Core libraries
+│   ├── api/               # API utilities
+│   │   ├── authService.ts # Backup authentication
+│   │   ├── cache.ts       # In-memory caching
+│   │   ├── cors.ts        # CORS configuration
+│   │   ├── docs.ts        # API documentation
+│   │   ├── errorHandler.ts# Error handling
 │   │   ├── huggingfaceService.ts # HuggingFace integration
 │   │   ├── rateLimiter.ts # Rate limiting
 │   │   ├── remotiveService.ts # Remotive API service
-│   │   └── types.ts      # TypeScript types
-│   ├── api.ts            # API client
-│   ├── data.ts           # Static data
-│   └── supabaseClient.ts # Supabase client
+│   │   └── types.ts       # TypeScript types
+│   ├── api.ts             # API client
+│   ├── data.ts            # Static data
+│   └── supabaseClient.ts  # Supabase client
 ├── components/            # React components
-├── styles/               # Additional styles
-├── types/                # Additional type definitions
-├── .env.example          # Environment variables template
-├── next.config.mjs      # Next.js configuration
-├── package.json          # Dependencies
+├── public/images/          # Screenshots and images
+├── .env.example           # Environment variables template
+├── next.config.mjs        # Next.js configuration
+├── package.json           # Dependencies
 ├── tailwind.config.ts    # Tailwind configuration
-└── tsconfig.json         # TypeScript configuration
+├── tsconfig.json          # TypeScript configuration
+├── README.md              # Project documentation
+└── DEPLOYMENT.md         # Deployment guide
 ```
 
 ## API Endpoints
@@ -77,6 +140,13 @@ engineervault/
 | ------------------ | ------ | -------------------- |
 | `/api/huggingface` | POST   | AI text operations   |
 | `/api/huggingface` | GET    | Get available models |
+
+### Authentication
+
+| Endpoint    | Method | Description                |
+| ----------- | ------ | -------------------------- |
+| `/api/auth` | POST   | Register, login, or logout |
+| `/api/auth` | GET    | Verify session             |
 
 ### System API
 
@@ -153,12 +223,37 @@ curl -X POST "http://localhost:3000/api/huggingface" \
   }'
 ```
 
+### Authentication (Register)
+
+```bash
+curl -X POST "http://localhost:3000/api/auth" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "register",
+    "email": "user@example.com",
+    "password": "password123",
+    "name": "John Doe"
+  }'
+```
+
+### Authentication (Login)
+
+```bash
+curl -X POST "http://localhost:3000/api/auth" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "login",
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
+
 ## Environment Variables
 
 Copy `.env.example` to `.env.local` and configure:
 
 ```bash
-# Supabase
+# Supabase (optional - for future auth features)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
@@ -178,7 +273,7 @@ VERCEL_FRONTEND_URL=https://your-project.vercel.app
 2. Create a new token with "Read" permissions
 3. Add it to your environment variables
 
-## Development
+## Installation & Setup
 
 ### Prerequisites
 
@@ -263,6 +358,21 @@ All errors return a consistent JSON format:
 | `embeddings` | Text embeddings          | inputs, model                       |
 | `classify`   | Zero-shot classification | inputs, parameters.candidate_labels |
 
+## User Features
+
+### Library System
+
+- Save books to your personal library
+- Track reading progress with levels
+- Earn points and unlock badges
+- Get AI-powered recommendations
+
+### Authentication
+
+- Sign up with email and password
+- Login to access personalized features
+- Sessions persist across browser refreshes
+
 ## Deployment
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
@@ -270,3 +380,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 ## License
 
 MIT License
+
+---
+
+Built with Next.js, Tailwind CSS, and ❤️
