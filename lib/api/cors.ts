@@ -8,18 +8,29 @@
 import { NextRequest } from 'next/server';
 
 // Allowed origins configuration
-const ALLOWED_ORIGINS = [
+const ALLOWED_ORIGINS: RegExp[] = [
   // Vercel deployments
   /^https:\/\/.*\.vercel\.app$/,
   /^https:\/\/vercel\.app$/,
   // Development environments
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3001',
-  // Add custom Vercel frontend domain from env
-  process.env.VERCEL_FRONTEND_URL,
-].filter(Boolean) as RegExp[];
+  /^http:\/\/localhost:3000$/,
+  /^http:\/\/localhost:3001$/,
+  /^http:\/\/127\.0\.0\.1:3000$/,
+  /^http:\/\/127\.0\.0\.1:3001$/,
+];
+
+// Add custom Vercel frontend domain from env if present
+if (process.env.VERCEL_FRONTEND_URL) {
+  try {
+    // Convert URL to regex pattern
+    const url = new URL(process.env.VERCEL_FRONTEND_URL);
+    const escaped = url.origin.replace(/[.]/g, '\\.');
+    const pattern = new RegExp(`^${escaped}$`);
+    ALLOWED_ORIGINS.push(pattern);
+  } catch {
+    // Invalid URL, ignore
+  }
+}
 
 /**
  * Check if origin is allowed
@@ -43,7 +54,7 @@ export function getCorsHeaders(origin: string | null | undefined, requestMethod?
   const headers: Record<string, string> = {
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, X-Request-ID',
-    'Access-Control-Max-Age': '86400', // 24 hours
+    'Access-Control-Max-Age': '86400',
   };
 
   if (origin && isOriginAllowed(origin)) {
